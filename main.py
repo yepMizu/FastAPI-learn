@@ -19,3 +19,6 @@ class Post(BaseModel):
 async def get_post(new_post: Post):
     print(new_post.rating)
     return{"Info":"New Post created.."}
+
+
+    # helloooo
