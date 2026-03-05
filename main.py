@@ -12,7 +12,10 @@ class Post(BaseModel):
     publish : bool = True
     rating : Optional[int] = None
 
-my_posts=[{"title":"Title of post","content" : "Content Of Post", "id" : "1"}]
+my_posts=[{"title":"Title of post","content" : "Content Of Post", "id" : "1"},
+                    {"title":"Title of post","content" : "Content Of Post", "id" : "2"},
+                    {"title":"Title of post","content" : "Content Of Post", "id" : "3"},]
+
 
 @app.get("/posts")
 async def root():
@@ -21,9 +24,16 @@ async def root():
 
 
 @app.post("/posts")
-async def get_post(post: Post):
+async def get_posts(post: Post):
     post_dict = post.dict()
     post_dict["id"] = randrange(0,100000)
     my_posts.append(post_dict)
     return{"data" : post_dict}
+
+
+@app.get("/posts/{id}")
+def get_post(id):
+    print(id)
+    return {"data" : f"This is post no.{id}"}
+
     
