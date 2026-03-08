@@ -3,7 +3,7 @@ from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
 from random import randrange
-from find_post import find_post,find_index
+from .find_post import find_post,find_index
 
 
 app= FastAPI()
