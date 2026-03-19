@@ -26,6 +26,7 @@ while True:
 
 
 class Post(BaseModel):
+    id : int
     roll : int 
     first_name : str
     last_name : str
@@ -39,14 +40,12 @@ async def root():
     print(posts)
     return{"data" : posts}
     
-
-
 @app.post("/posts")
-async def get_posts(post: Post):
-    post_dict = post.dict()
-    post_dict["id"] = randrange(0,100000)
-    my_posts.append(post_dict)
-    return{"data" : post_dict}
+def add_student():
+    cursor.execute(""" INSERT INTO "Class" (id , roll , first_name , last_name , age) VALUES (%s,%s,%s,%s,%s) RETURNING * """)
+    new_post = cursor.fetchone()
+    print(new_post)
+    return {"data" : new_post}
 
 @app.get("/posts/{id}")
 def get_post(id : int , response : Response):
