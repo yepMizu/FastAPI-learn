@@ -26,10 +26,11 @@ while True:
 
 
 class Post(BaseModel):
-    title: str
-    content : str
-    publish : bool = True
-    rating : Optional[int] = None
+    roll : int 
+    first_name : str
+    last_name : str
+    age : int
+    
 
 my_posts=[{"title":"Title of post","content" : "Content Of Post", "id" : 1},
                     {"title":"Title of post","content" : "Content Of Post", "id" : 2},
