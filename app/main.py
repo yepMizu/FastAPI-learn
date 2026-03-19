@@ -31,17 +31,14 @@ class Post(BaseModel):
     last_name : str
     age : int
     
-
-my_posts=[{"title":"Title of post","content" : "Content Of Post", "id" : 1},
-                    {"title":"Title of post","content" : "Content Of Post", "id" : 2},
-                    {"title":"Title of post","content" : "Content Of Post", "id" : 3},
-                    {"title":"Puja","content" : "Goofy me", "id" : 4},
-                    {"title" : "Prava", "content" : "Dashian 2082" , "id" : 5}]
-
-
+    
 @app.get("/posts")
 async def root():
-    return{"data": my_posts}
+    cursor.execute("""SELECT * FROM "Class" """)
+    posts = cursor.fetchall()
+    print(posts)
+    return{"data" : posts}
+    
 
 
 @app.post("/posts")
