@@ -14,7 +14,7 @@ app= FastAPI()
 
 while True:
     try:
-        conn = psycopg2.connect(host='localhost' , database = 'mydb' , user = 'postgres' , password = 'password123' , cursor_factory=RealDictCursor)
+        conn = psycopg2.connect(host='localhost' , database = 'MyDB' , user = 'postgres' , password = 'password123' , cursor_factory=RealDictCursor)
         cursor = conn.cursor()
         print("Database connected Successfully")
         break
@@ -26,26 +26,29 @@ while True:
 
 
 class Post(BaseModel):
-    id : int
     roll : int 
     first_name : str
     last_name : str
     age : int
     
-    
 @app.get("/posts")
 async def root():
-    cursor.execute("""SELECT * FROM "Class" """)
+    cursor.execute("""SELECT * FROM "class" """)
     posts = cursor.fetchall()
     print(posts)
     return{"data" : posts}
     
 @app.post("/posts")
-def add_student():
-    cursor.execute(""" INSERT INTO "Class" (id , roll , first_name , last_name , age) VALUES (%s,%s,%s,%s,%s) RETURNING * """)
+def add_student(post: Post):
+    cursor.execute("""
+        INSERT INTO "class" (roll, first_name, last_name, age)
+        VALUES (%s, %s, %s, %s)
+        RETURNING *""", 
+        (post.roll, post.first_name, post.last_name, post.age)) 
+
     new_post = cursor.fetchone()
-    print(new_post)
-    return {"data" : new_post}
+    conn.commit()
+    return {"data": new_post}
 
 @app.get("/posts/{id}")
 def get_post(id : int , response : Response):
@@ -64,7 +67,6 @@ def delete_post(id : int):
 
     my_posts.pop(index)
     return Response(status_code=204)
-
 
 
 @app.put("/posts/{id}")
