@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response , HTTPException
+from fastapi import FastAPI, Response , HTTPException, status
 from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
@@ -23,6 +23,7 @@ while True:
         print("Connecting to database failed")
         print("Error: ",error)
         time.sleep(3)
+
 
 
 class Post(BaseModel):
@@ -52,20 +53,22 @@ def add_student(post: Post):
 
 @app.get("/posts/{id}")
 def get_post(id : int , response : Response):
-    post = find_post(id,my_posts)
+    cursor.execute(""" SELECT * from class WHERE id = %s """, (id,))
+    post = cursor.fetchone()
     if not post:
-        response.status_code = 404
-        return {"detail" : f"Post with id no. {id} was not found"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+        detail=f"Post with id: {id} not found")
     return {"post_detail" : post}
 
 @app.delete("/posts/delete/{id}" , status_code=204)
 def delete_post(id : int):
-    index = find_index(id,my_posts)
+    cursor.execute(""" DELETE FROM class WHERE id = %s RETURNING * """ , (id,))
+    delete_post = cursor.fetchone()
+    conn.commit()
 
-    if index == None:
-        raise HTTPException(status_code=404, detail=f"Post with id no: {id} doesnt exist")
-
-    my_posts.pop(index)
+    if not delete_post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Post with id no: {id} doesnt exist")
     return Response(status_code=204)
 
 
