@@ -6,3 +6,10 @@ class Post(BaseModel):
     last_name : str
     age : int
     
+
+class Student(BaseModel):
+    first_name : str
+    last_name : str
+    age : int 
+    is_passed : bool
+
